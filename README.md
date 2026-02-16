@@ -20,12 +20,15 @@ Affiliations: University of Alberta, Environment and Climate Change Canada
 ## Study Description
 
 ### Study Purpose
-This data was collected as part of a Master's thesis conducted at the University of Alberta. The goal of this data is to use the localization o
+This data was collected as part of a Master's thesis conducted at the University of Alberta. The goal of this data is to use localization as a gold-standard dataset to understand mechanisms contributing to the error in survey techniques. The arrays were deployed in the South Okanagan of British Columbia. Specifically, along White Lake Rd. The location was selected for its geographical features (slope, hills, grassland, shrub step) to monitor grassland species in open habitats with no tree cover. 
 
 ### Personnel
 Katrine Guse, Elly Knight, Dan Yip, Erin Bayne and the help of Sean Vanderluit in the field
 
 ### Data Types Collected
+The data collected included audio recordings from 49 AudioMoths and 1 SM-2 Mini (additional centroid), paired point counts, spot maps, sound playback, GPS points using real-time kinematic positioning, and weather element data. 
 
 ## Files
-This section describes the contents of each file 
+This section describes the contents of each file. 
+
+
