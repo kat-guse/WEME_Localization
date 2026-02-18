@@ -1,3 +1,4 @@
+#ensures that the clips created contain a WEME (species of interest)
 import os
 import pandas as pd
 import numpy as np
