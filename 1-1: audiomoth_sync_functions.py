@@ -1,4 +1,4 @@
-#Using opensoundscape - audiomothsync.py example 
+#Function definitions to run with 1-2: audiomoth_run_sync
 import warnings
 import pandas as pd
 import numpy as np
