@@ -31,4 +31,16 @@ The data collected included audio recordings from 49 AudioMoths and 1 SM-2 Mini 
 ## Files
 This section describes the contents of each file. 
 
+- localized_events.csv — main table with event_id, label, start_timestamp, duration, position (utm x/y/z), file_ids, file_start_time_offsets, tdoas (optional), distance_residuals (optional)
+- classes.csv — describes each species/class
 
+/localization_metadata/ folder:
+  - point_table.csv — ARU locations: point_id, utm_easting, utm_northing, elevation, utm_zone
+  - audio_file_table.csv — audio file catalog: file_id, relative_path, point_id, start_timestamp
+
+/scripts/ folder:
+- All scripts used (.py, .ipynb, .r files) to create the localizations
+- environment.yml — frozen Python environment with package versions
+
+/audio/ folder:
+- All audio files organized however you want (e.g., by recorder, flat structure)
