@@ -1,3 +1,6 @@
+# Creates final data products and visualizations
+# First, it checks the HawkEars score distribution, then loads confirmed positions, 
+# prints coordinate statistics and quality metrics, creates a csv, and an interactive html map.
 import pandas as pd
 import numpy as np
 import shelve
