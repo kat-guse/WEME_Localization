@@ -44,3 +44,7 @@ This section describes the contents of each file.
 
 /audio/ folder:
 - All audio files organized however you want (e.g., by recorder, flat structure)
+
+## Sites
+The Nature Trust of BC Property, 	White Lake Basin Biodiversity Ranch Boundary, South Okanagan, British Columbia, Canada 
+
