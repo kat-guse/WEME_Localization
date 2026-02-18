@@ -13,7 +13,7 @@ print(f"Using device: {device}")
 
 """
 Phase 1: Run Point Counts through Hawkears and format to ensure I can use the
-validation app Meg created.
+validation app created by Megan Edgar.
 """
 
 #directory
