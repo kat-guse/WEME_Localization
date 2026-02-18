@@ -89,9 +89,6 @@ print(f"✓ CSV exported to: {output_csv}")
 # ==========================================
 # 6. CREATE INTERACTIVE MAP
 # ==========================================
-# ==========================================
-# 6. CREATE INTERACTIVE MAP
-# ==========================================
 print("\nCreating interactive HTML map...")
 
 # Load ARU coordinates
