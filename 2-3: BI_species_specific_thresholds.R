@@ -204,7 +204,7 @@ if (!is.null(audio_root) && dir.exists(audio_root)) {
 outfile_csv <- file.path(out_dir, paste0(species_tag, "_BI_thresholds.csv"))
 write_csv(bi_results, outfile_csv)
 
-#  PLOTTING FUNCTION
+#  PLOTTING FUNCTION - simplified kernel density
 
 plot_bi_thresholds <- function(df, species_name, outfile) {
   
