@@ -1,6 +1,7 @@
-# filter_localizations.py
-# Run this interactively AFTER run_localization.py has finished:
-#   python filter_localizations.py
+
+# Run this interactively AFTER 4-2: WEME_localizations.py has finished:
+#creates plots to choose thresholds and lets you input them directly into the output 
+# example: python /media/UofA/BU_Work/BayneLabWorkSpace/Katrine_workspace/AudioMothSync/scripts/4-3: filter_localizations.py
 
 import pandas as pd
 import numpy as np
@@ -93,6 +94,118 @@ for t in [2, 5, 10, 15, 20, 30, 50]:
 print()
 
 # ==========================================
+# GENERATE DIAGNOSTIC PLOTS (BEFORE asking for input)
+# ==========================================
+print("=" * 55)
+print("  Generating diagnostic plots...")
+print("=" * 55)
+
+# Plot 1 — RMS histogram
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.hist(df['residual_rms'], bins=50, edgecolor='black', color='steelblue')
+for cutoff, style in [(5, '--'), (10, '-.'), (20, ':')]:
+    ax.axvline(cutoff, color='grey', linestyle=style, alpha=0.6, label=f'{cutoff} m')
+ax.set_xlabel('Residual RMS (m)')
+ax.set_ylabel('Count')
+ax.set_title(f'{SPECIES_TO_PROCESS} — Residual RMS distribution')
+ax.legend()
+plt.tight_layout()
+fig.savefig(os.path.join(diag_dir, '1_residual_rms_histogram.png'), dpi=150)
+plt.close(fig)
+print(f"  ✓ Saved: 1_residual_rms_histogram.png")
+
+# Plot 2 — Mean residual histogram
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.hist(df['mean_residual'], bins=50, edgecolor='black', color='teal')
+for cutoff, style in [(2, '--'), (5, '-.'), (15, ':')]:
+    ax.axvline(cutoff, color='grey', linestyle=style, alpha=0.6, label=f'{cutoff} m')
+ax.set_xlabel('Mean Residual (m)')
+ax.set_ylabel('Count')
+ax.set_title(f'{SPECIES_TO_PROCESS} — Mean residual distribution')
+ax.legend()
+plt.tight_layout()
+fig.savefig(os.path.join(diag_dir, '2_mean_residual_histogram.png'), dpi=150)
+plt.close(fig)
+print(f"  ✓ Saved: 2_mean_residual_histogram.png")
+
+# Plot 3 — CC Max histogram
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.hist(df['mean_cc_max'], bins=50, edgecolor='black', color='darkorange')
+for cutoff, style in [(0.02, '--'), (0.05, '-.'), (0.1, ':')]:
+    ax.axvline(cutoff, color='grey', linestyle=style, alpha=0.6, label=f'{cutoff}')
+ax.set_xlabel('Mean CC Max')
+ax.set_ylabel('Count')
+ax.set_title(f'{SPECIES_TO_PROCESS} — Cross-correlation score distribution')
+ax.legend()
+plt.tight_layout()
+fig.savefig(os.path.join(diag_dir, '3_mean_cc_max_histogram.png'), dpi=150)
+plt.close(fig)
+print(f"  ✓ Saved: 3_mean_cc_max_histogram.png")
+
+# Plot 4 — Elevation histogram
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.hist(df['pred_z'], bins=50, edgecolor='black', color='slategrey')
+ax.axvline(Z_MIN_AUTO, color='red', linestyle='--', linewidth=2, label=f'suggested min = {Z_MIN_AUTO:.0f}')
+ax.axvline(Z_MAX_AUTO, color='red', linestyle=':',  linewidth=2, label=f'suggested max = {Z_MAX_AUTO:.0f}')
+ax.set_xlabel('Predicted elevation (m)')
+ax.set_ylabel('Count')
+ax.set_title(f'{SPECIES_TO_PROCESS} — Predicted elevation distribution')
+ax.legend()
+plt.tight_layout()
+fig.savefig(os.path.join(diag_dir, '4_pred_z_histogram.png'), dpi=150)
+plt.close(fig)
+print(f"  ✓ Saved: 4_pred_z_histogram.png")
+
+# Plot 5 — Spatial scatter (unfiltered)
+padding = 300
+X_MIN = grid_8_coords['x'].min() - padding
+X_MAX = grid_8_coords['x'].max() + padding
+Y_MIN = grid_8_coords['y'].min() - padding
+Y_MAX = grid_8_coords['y'].max() + padding
+
+fig, ax = plt.subplots(figsize=(8, 7))
+sc = ax.scatter(
+    df['pred_x'], df['pred_y'],
+    c=df['residual_rms'], cmap='jet', alpha=0.6,
+    edgecolors='none', s=30,
+    vmin=0, vmax=df['residual_rms'].quantile(0.95)
+)
+ax.plot(grid_8_coords['x'], grid_8_coords['y'],
+        '^', color='black', markersize=8, label='ARU')
+plt.colorbar(sc, ax=ax).set_label('Residual RMS (m)')
+ax.set_xlim(X_MIN, X_MAX)
+ax.set_ylim(Y_MIN, Y_MAX)
+ax.set_xlabel('Easting')
+ax.set_ylabel('Northing')
+ax.set_title(f'{SPECIES_TO_PROCESS} — All localizations (unfiltered)')
+ax.legend()
+plt.tight_layout()
+fig.savefig(os.path.join(diag_dir, '5_all_localizations_unfiltered.png'), dpi=150)
+plt.close(fig)
+print(f"  ✓ Saved: 5_all_localizations_unfiltered.png")
+
+# Plot 6 — RMS threshold tradeoff
+thresholds = [2, 5, 10, 15, 20, 30, 50]
+counts = [len(df[df['residual_rms'] < t]) for t in thresholds]
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(thresholds, counts, 'o-', color='steelblue')
+for t, c in zip(thresholds, counts):
+    ax.annotate(str(c), (t, c), textcoords='offset points',
+                xytext=(0, 6), ha='center', fontsize=8)
+ax.set_xlabel('Residual RMS threshold (m)')
+ax.set_ylabel('Localizations retained')
+ax.set_title(f'{SPECIES_TO_PROCESS} — Detections surviving each RMS cutoff')
+ax.grid(True, linestyle='--', alpha=0.5)
+plt.tight_layout()
+fig.savefig(os.path.join(diag_dir, '6_rms_threshold_tradeoff.png'), dpi=150)
+plt.close(fig)
+print(f"  ✓ Saved: 6_rms_threshold_tradeoff.png")
+
+print(f"\n✓ All diagnostic plots saved to: {diag_dir}")
+print("\nReview the plots (download them if running remotely),")
+print("then return here to enter filter thresholds.\n")
+
+# ==========================================
 # HELPER — prompt with validation
 # ==========================================
 def ask_threshold(prompt, min_val=None, max_val=None, allow_none=True):
@@ -119,7 +232,9 @@ def ask_threshold(prompt, min_val=None, max_val=None, allow_none=True):
 # ==========================================
 # INTERACTIVE THRESHOLD ENTRY
 # ==========================================
-print("Enter quality filter thresholds.")
+print("=" * 55)
+print("  Enter quality filter thresholds")
+print("=" * 55)
 print("Press Enter to skip any filter.\n")
 
 rms_max      = ask_threshold("  Max Residual RMS (m)   [e.g. 20, Enter to skip]: ", min_val=0)
@@ -148,11 +263,12 @@ print(f"    pred_z          {z_min:.0f} – {z_max:.0f} m")
 print(f"\n  Localizations retained: {len(filtered)} / {len(df)}")
 
 # ==========================================
-# SAVE PLOTS
+# REGENERATE KEY PLOTS WITH USER'S THRESHOLDS MARKED
 # ==========================================
-def save_plots(rms_max, mean_res_max, cc_min, z_min, z_max):
+def regenerate_plots_with_thresholds(rms_max, mean_res_max, cc_min, z_min, z_max):
+    print("\nRegenerating plots with your chosen thresholds marked...")
     
-    # Plot 1 — RMS histogram
+    # Plot 1 — RMS histogram with user's threshold
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.hist(df['residual_rms'], bins=50, edgecolor='black', color='steelblue')
     if rms_max:
@@ -161,13 +277,13 @@ def save_plots(rms_max, mean_res_max, cc_min, z_min, z_max):
         ax.axvline(cutoff, color='grey', linestyle=style, alpha=0.6, label=f'{cutoff} m')
     ax.set_xlabel('Residual RMS (m)')
     ax.set_ylabel('Count')
-    ax.set_title(f'{SPECIES_TO_PROCESS} — Residual RMS distribution')
+    ax.set_title(f'{SPECIES_TO_PROCESS} — Residual RMS (with your threshold)')
     ax.legend()
     plt.tight_layout()
-    fig.savefig(os.path.join(diag_dir, '1_residual_rms_histogram.png'), dpi=150)
+    fig.savefig(os.path.join(diag_dir, '1_residual_rms_histogram_FILTERED.png'), dpi=150)
     plt.close(fig)
 
-    # Plot 6 — RMS threshold tradeoff
+    # Plot 6 — RMS tradeoff with user's threshold
     thresholds = [2, 5, 10, 15, 20, 30, 50]
     counts = [len(df[df['residual_rms'] < t]) for t in thresholds]
     fig, ax = plt.subplots(figsize=(7, 4))
@@ -179,25 +295,19 @@ def save_plots(rms_max, mean_res_max, cc_min, z_min, z_max):
                     xytext=(0, 6), ha='center', fontsize=8)
     ax.set_xlabel('Residual RMS threshold (m)')
     ax.set_ylabel('Localizations retained')
-    ax.set_title(f'{SPECIES_TO_PROCESS} — Detections surviving each RMS cutoff')
+    ax.set_title(f'{SPECIES_TO_PROCESS} — RMS threshold tradeoff (with your choice)')
     ax.grid(True, linestyle='--', alpha=0.5)
     ax.legend()
     plt.tight_layout()
-    fig.savefig(os.path.join(diag_dir, '6_rms_threshold_tradeoff.png'), dpi=150)
+    fig.savefig(os.path.join(diag_dir, '6_rms_threshold_tradeoff_FILTERED.png'), dpi=150)
     plt.close(fig)
 
-    # Plot 5 — Spatial scatter with zoomed axes
-    padding = 300
-    X_MIN = grid_8_coords['x'].min() - padding
-    X_MAX = grid_8_coords['x'].max() + padding
-    Y_MIN = grid_8_coords['y'].min() - padding
-    Y_MAX = grid_8_coords['y'].max() + padding
-    
+    # Plot 5 — Spatial scatter of FILTERED points only
     fig, ax = plt.subplots(figsize=(8, 7))
     sc = ax.scatter(
         filtered['pred_x'], filtered['pred_y'],
         c=filtered['residual_rms'], cmap='jet', alpha=0.6,
-        edgecolors='none', s=30,
+        edgecolors='black', s=40, linewidths=0.5,
         vmin=0, vmax=df['residual_rms'].quantile(0.95)
     )
     ax.plot(grid_8_coords['x'], grid_8_coords['y'],
@@ -207,22 +317,22 @@ def save_plots(rms_max, mean_res_max, cc_min, z_min, z_max):
     ax.set_ylim(Y_MIN, Y_MAX)
     ax.set_xlabel('Easting')
     ax.set_ylabel('Northing')
-    ax.set_title(f'{SPECIES_TO_PROCESS} — Filtered localizations (zoomed to grid)')
+    ax.set_title(f'{SPECIES_TO_PROCESS} — Filtered localizations (n={len(filtered)})')
     ax.legend()
     plt.tight_layout()
-    fig.savefig(os.path.join(diag_dir, '5_filtered_localizations_zoomed.png'), dpi=150)
+    fig.savefig(os.path.join(diag_dir, '5_filtered_localizations_FINAL.png'), dpi=150)
     plt.close(fig)
-
-    print(f"\n  Plots saved to: {diag_dir}")
+    
+    print(f"  ✓ Updated plots saved to: {diag_dir}")
 
 # ==========================================
 # CONFIRM AND SAVE
 # ==========================================
 while True:
-    confirm = input("\n  Save filtered CSV and plots? [y/n]: ").strip().lower()
+    confirm = input("\n  Save filtered CSV and regenerate plots with your thresholds? [y/n]: ").strip().lower()
     if confirm == 'y':
         filtered.to_csv(filtered_path, index=False)
-        save_plots(rms_max, mean_res_max, cc_min, z_min, z_max)
+        regenerate_plots_with_thresholds(rms_max, mean_res_max, cc_min, z_min, z_max)
         print(f"\n  ✓ Filtered CSV saved to: {filtered_path}")
         print(f"  ✓ {len(filtered)} localizations retained from {len(df)} total.")
         break
