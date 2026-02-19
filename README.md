@@ -46,5 +46,50 @@ This section describes the contents of each file.
 - All audio files organized however you want (e.g., by recorder, flat structure)
 
 ## Sites
-The Nature Trust of BC Property, 	White Lake Basin Biodiversity Ranch Boundary, South Okanagan, British Columbia, Canada 
+The Nature Trust of BC Property, 	White Lake Basin Biodiversity Ranch Boundary, South Okanagan, British Columbia, Canada. Dry Mixed Grass ecozone, with sandy soils, primarily dominated by native grasses and shrubs. The bird community is dominated by Western Meadowlark, White-crowned Sparrow, Vesper Sparrow, Spotted Towhee and many more. Grazed by cattle intermittently throughout the spring and summer. 
+
+## Hardware
+Recorder Source: Open Acoustics Devices
+
+Recorder Model: AudioMoth (equipped with a GPS-hat)
+
+Firmware version: AudioMoth GPS Sync
+
+## Recording properties: 
+Date of recordings: 2025/06/16,
+
+Times of recording/Sleep-wake schedule: 4 am to 12 pm (20 minutes on, 10 minutes off),
+
+Sample rate: 48000,
+
+Gain: 2,
+
+initialFixDuration: 120,
+
+intervalToNextFixAttempt: 60,
+
+recordingFixDuration: 60.
+
+## Recorder Placement and Deployment
+Recorders were placed on 1.2 m tall stakes in a 7x7 grid with 35 m spacing. Recorders were placed in Ziplock sandwich bags to affix the units to the stake. 
+
+## Position measurement
+Method of Measurement: Hemisphere RTK S320 
+
+General accuracy: VGA 3.8" LCD with 480 x 640 resolution
+
+## Synchronization
+Files in the archive are presumed to be synchronized.
+
+### Synchronization Method
+Synchronized using the opensoundscape.localization.audiomoth_sync module. 
+
+Code used: Code used can be found in the GitHub repository 
+
+
+
+
+
+
+
 
