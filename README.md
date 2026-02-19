@@ -84,7 +84,7 @@ Files in the archive are presumed to be synchronized.
 ### Synchronization Method
 Synchronized using the opensoundscape.localization.audiomoth_sync module. 
 
-Code used: Code used can be found in the GitHub repository 
+Code used: Code used can be found in the GitHub repository: https://github.com/kat-guse/WEME_Localization.git
 
 
 
