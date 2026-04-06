@@ -1,4 +1,4 @@
-#called parse-hawkears #ensures that the clips created contain a WEME (species of interest)
+#called 4-4replacement #ensures that the clips created contain a WEME (species of interest)
 import os
 import pandas as pd
 import numpy as np
